@@ -3,5 +3,4 @@ openai
 PyPDF2
 SpeechRecognition
 gtts
-pyaudio
 pdfkit
