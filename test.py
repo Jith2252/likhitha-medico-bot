@@ -19,33 +19,7 @@ try:
 except ImportError:
     PyPDF2 = None
 
-
-st.title("Likhitha Medico-Bot💊🩺")
-
-
-
-# File upload/image/PDF/text support
-uploaded_file = st.file_uploader(
-    "Upload an image, PDF, or text file (optional, for reference/Q&A):",
-    type=["jpg", "jpeg", "png", "pdf", "txt"])
-uploaded_file_text = None
-if uploaded_file is not None:
-    if uploaded_file.type.startswith("image"):
-        st.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
-    elif uploaded_file.type == "application/pdf" and PyPDF2 is not None:
-        try:
-            pdf_reader = PyPDF2.PdfReader(uploaded_file)
-            uploaded_file_text = "\n".join(page.extract_text() or "" for page in pdf_reader.pages)
-            st.success("PDF uploaded and text extracted for Q&A.")
-        except Exception as e:
-            st.error(f"Failed to extract PDF text: {e}")
-    elif uploaded_file.type == "text/plain":
-        uploaded_file_text = uploaded_file.read().decode("utf-8")
-        st.success("Text file uploaded for Q&A.")
-    else:
-        st.info("File type not supported for Q&A.")
-
-# Voice input/output support
+# Voice input/output support functions
 def process_audio_file(audio_file):
     """Process uploaded audio file for speech recognition"""
     if sr is None:
@@ -91,40 +65,80 @@ def text_to_speech(text):
     except Exception as e:
         st.error(f"Text-to-speech error: {e}")
 
+
+st.title("Likhitha Medico-Bot💊🩺")
+
+
+
+# Unified file upload support for documents, images, and audio
 st.markdown("---")
-st.subheader("🎤 Voice Input/Output")
-col1, col2 = st.columns(2)
-with col1:
-    st.markdown("**Audio Input:**")
-    audio_file = st.file_uploader(
-        "Upload an audio file (WAV, MP3, M4A)", 
-        type=["wav", "mp3", "m4a"],
-        help="Record audio on your device and upload it here for speech-to-text conversion"
-    )
-    
-    if audio_file is not None:
-        st.audio(audio_file, format="audio/wav")
-        if st.button("🎙️ Convert Audio to Text"):
-            with st.spinner("Processing audio..."):
-                recognized_text = process_audio_file(audio_file)
-                if recognized_text:
-                    st.session_state["voice_input"] = recognized_text
-                    st.success(f"Converted text: {recognized_text}")
-                    st.rerun()
-    
-    if "voice_input" in st.session_state:
-        st.success(f"Voice input: {st.session_state['voice_input']}")
+st.subheader("📁 File Upload & Voice Input")
 
-with col2:
-    st.markdown("**Audio Output:**")
-    if gTTS is not None and st.session_state.get("last_assistant_response"):
-        if st.button("🔊 Play Last Assistant Response"):
-            with st.spinner("Generating audio..."):
-                text_to_speech(st.session_state["last_assistant_response"])
+# Single file uploader for all file types
+uploaded_file = st.file_uploader(
+    "Upload a file for analysis or voice input:",
+    type=["jpg", "jpeg", "png", "pdf", "txt", "wav", "mp3", "m4a"],
+    help="• Documents/Images: JPG, PNG, PDF, TXT for reference/Q&A\n• Audio: WAV, MP3, M4A for speech-to-text conversion"
+)
+
+uploaded_file_text = None
+if uploaded_file is not None:
+    file_type = uploaded_file.type
+    
+    # Handle image files
+    if file_type.startswith("image"):
+        st.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
+        st.success("Image uploaded successfully for reference.")
+    
+    # Handle PDF files
+    elif file_type == "application/pdf" and PyPDF2 is not None:
+        try:
+            pdf_reader = PyPDF2.PdfReader(uploaded_file)
+            uploaded_file_text = "\n".join(page.extract_text() or "" for page in pdf_reader.pages)
+            st.success("PDF uploaded and text extracted for Q&A.")
+        except Exception as e:
+            st.error(f"Failed to extract PDF text: {e}")
+    
+    # Handle text files
+    elif file_type == "text/plain":
+        uploaded_file_text = uploaded_file.read().decode("utf-8")
+        st.success("Text file uploaded for Q&A.")
+    
+    # Handle audio files
+    elif file_type.startswith("audio") or uploaded_file.name.endswith(('.wav', '.mp3', '.m4a')):
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("**Audio Preview:**")
+            st.audio(uploaded_file, format="audio/wav")
+        
+        with col2:
+            st.markdown("**Convert to Text:**")
+            if st.button("🎙️ Convert Audio to Text"):
+                with st.spinner("Processing audio..."):
+                    # Reset file pointer
+                    uploaded_file.seek(0)
+                    recognized_text = process_audio_file(uploaded_file)
+                    if recognized_text:
+                        st.session_state["voice_input"] = recognized_text
+                        st.success(f"Converted text: {recognized_text}")
+                        st.rerun()
+    
     else:
-        st.info("Text-to-speech will be available after getting a response from the assistant.")
+        st.info("File type not supported. Please upload: Images (JPG, PNG), Documents (PDF, TXT), or Audio (WAV, MP3, M4A).")
 
+# Display voice input if available
+if "voice_input" in st.session_state:
+    st.success(f"🎤 Voice input: {st.session_state['voice_input']}")
 
+# Text-to-speech output section
+st.markdown("**🔊 Audio Output:**")
+if gTTS is not None and st.session_state.get("last_assistant_response"):
+    if st.button("🔊 Play Last Assistant Response"):
+        with st.spinner("Generating audio..."):
+            text_to_speech(st.session_state["last_assistant_response"])
+else:
+    st.info("Text-to-speech will be available after getting a response from the assistant.")
 
 # Try to load API key from environment variable or session state
 if "api_key" not in st.session_state:
