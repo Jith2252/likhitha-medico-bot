@@ -4,8 +4,4 @@ PyPDF2
 SpeechRecognition
 gtts
 pdfkit
-<<<<<<< HEAD
 pydub
-=======
-pydub
->>>>>>> 3c4e2ab09d05a2837eb468d8d77793a521e5958a
