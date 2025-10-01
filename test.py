@@ -68,6 +68,74 @@ def text_to_speech(text):
 
 st.title("Likhitha Medico-Bot💊🩺")
 
+# Apply custom theme CSS based on user preference
+if "theme_mode" not in st.session_state:
+    st.session_state["theme_mode"] = "dark"
+
+# Custom CSS for theme enhancement
+if st.session_state.get("theme_mode") == "light":
+    st.markdown("""
+    <style>
+    /* Light theme customizations */
+    .main .block-container {
+        background-color: #ffffff;
+    }
+    .stTextInput > div > div > input {
+        background-color: #f8f9fa;
+        color: #212529;
+    }
+    .stSelectbox > div > div > select {
+        background-color: #f8f9fa;
+        color: #212529;
+    }
+    .stButton > button {
+        background-color: #007bff;
+        color: white;
+        border: 1px solid #007bff;
+    }
+    .stButton > button:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+    /* Chat message styling for light theme */
+    .stChatMessage {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+else:
+    st.markdown("""
+    <style>
+    /* Dark theme customizations */
+    .main .block-container {
+        background-color: #0e1117;
+    }
+    .stTextInput > div > div > input {
+        background-color: #262730;
+        color: #fafafa;
+    }
+    .stSelectbox > div > div > select {
+        background-color: #262730;
+        color: #fafafa;
+    }
+    .stButton > button {
+        background-color: #ff4b4b;
+        color: white;
+        border: 1px solid #ff4b4b;
+    }
+    .stButton > button:hover {
+        background-color: #ff2b2b;
+        border-color: #ff2b2b;
+    }
+    /* Chat message styling for dark theme */
+    .stChatMessage {
+        background-color: #262730;
+        border: 1px solid #464646;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
 
 
 # Unified file upload support for documents, images, and audio
@@ -156,15 +224,35 @@ api_key = st.session_state.get("api_key", "")
 
 with st.sidebar:
     st.header("Settings & Info")
-    # Theme toggle
+    
+    # Theme toggle with visual feedback
     if "theme_mode" not in st.session_state:
         st.session_state["theme_mode"] = "dark"
-    theme = st.radio("Theme", ["dark", "light"], index=0 if st.session_state["theme_mode"]=="dark" else 1)
-    if theme != st.session_state["theme_mode"]:
-        st.session_state["theme_mode"] = theme
-        st.experimental_set_query_params(theme=theme)
-        st.rerun()
-    st.markdown(f"**Current theme:** {st.session_state['theme_mode'].capitalize()}")
+    
+    st.markdown("**Theme Selection:**")
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        if st.button("🌙 Dark", disabled=(st.session_state["theme_mode"] == "dark")):
+            st.session_state["theme_mode"] = "dark"
+            st.rerun()
+    
+    with col2:
+        if st.button("☀️ Light", disabled=(st.session_state["theme_mode"] == "light")):
+            st.session_state["theme_mode"] = "light"
+            st.rerun()
+    
+    # Show current theme status
+    current_theme = st.session_state["theme_mode"]
+    if current_theme == "dark":
+        st.success("🌙 Dark theme active")
+    else:
+        st.info("☀️ Light theme active")
+    
+    # Note about Streamlit theme
+    st.caption("💡 For best results, set your browser/system to the same theme, or use Streamlit's built-in theme toggle in the top-right menu.")
+    
+    st.markdown("---")
     # Model selection
     model_options = ["gpt-3.5-turbo", "gpt-4", "gpt-4o"]
     if "openai_model" not in st.session_state:
