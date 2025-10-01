@@ -126,6 +126,32 @@ if st.session_state.get("theme_mode") == "light":
         background-color: #ffffff !important;
         border: 2px dashed #ced4da !important;
     }
+    .stFileUploader > div {
+        background-color: #ffffff !important;
+        color: #212529 !important;
+    }
+    .stFileUploader label {
+        color: #212529 !important;
+    }
+    /* Chat input for light theme */
+    .stChatInput {
+        background-color: #ffffff !important;
+    }
+    .stChatInput > div > div {
+        background-color: #ffffff !important;
+        border: 1px solid #ced4da !important;
+    }
+    .stChatInput input {
+        background-color: #ffffff !important;
+        color: #212529 !important;
+    }
+    /* Header and navigation for light theme */
+    .stApp > header {
+        background-color: #ffffff !important;
+    }
+    .stToolbar {
+        background-color: #ffffff !important;
+    }
     /* General text color for light theme */
     .stMarkdown, .stText, p, div, span, h1, h2, h3, h4, h5, h6 {
         color: #212529 !important;
@@ -188,6 +214,32 @@ else:
     .stFileUploader {
         background-color: #262730 !important;
         border: 2px dashed #464646 !important;
+    }
+    .stFileUploader > div {
+        background-color: #262730 !important;
+        color: #fafafa !important;
+    }
+    .stFileUploader label {
+        color: #fafafa !important;
+    }
+    /* Chat input for dark theme */
+    .stChatInput {
+        background-color: #262730 !important;
+    }
+    .stChatInput > div > div {
+        background-color: #262730 !important;
+        border: 1px solid #464646 !important;
+    }
+    .stChatInput input {
+        background-color: #262730 !important;
+        color: #fafafa !important;
+    }
+    /* Header and navigation for dark theme */
+    .stApp > header {
+        background-color: #0e1117 !important;
+    }
+    .stToolbar {
+        background-color: #0e1117 !important;
     }
     /* General text color for dark theme */
     .stMarkdown, .stText, p, div, span, h1, h2, h3, h4, h5, h6 {
