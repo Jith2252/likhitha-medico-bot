@@ -4,3 +4,4 @@ PyPDF2
 SpeechRecognition
 gtts
 pdfkit
+pyaudio
