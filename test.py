@@ -50,41 +50,60 @@ def recognize_speech():
     if sr is None:
         st.warning("SpeechRecognition is not installed.")
         return ""
-    recognizer = sr.Recognizer()
-    with sr.Microphone() as source:
-        st.info("Listening... Please speak now.")
-        audio = recognizer.listen(source, timeout=5, phrase_time_limit=10)
     try:
-        text = recognizer.recognize_google(audio)
-        st.success(f"You said: {text}")
-        return text
+        recognizer = sr.Recognizer()
+        with sr.Microphone() as source:
+            st.info("Listening... Please speak now.")
+            recognizer.adjust_for_ambient_noise(source, duration=1)
+            audio = recognizer.listen(source, timeout=10, phrase_time_limit=15)
+        try:
+            text = recognizer.recognize_google(audio)
+            st.success(f"You said: {text}")
+            return text
+        except sr.UnknownValueError:
+            st.error("Could not understand the audio. Please try again.")
+            return ""
+        except sr.RequestError as e:
+            st.error(f"Error with speech recognition service: {e}")
+            return ""
     except Exception as e:
-        st.error(f"Speech recognition failed: {e}")
+        st.error(f"Microphone error: {e}. Please check your microphone permissions.")
         return ""
 
 def text_to_speech(text):
     if gTTS is None:
         st.warning("gTTS is not installed.")
         return
-    tts = gTTS(text)
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as fp:
-        tts.save(fp.name)
-        st.audio(fp.name, format="audio/mp3")
+    try:
+        tts = gTTS(text)
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as fp:
+            tts.save(fp.name)
+            st.audio(fp.name, format="audio/mp3")
+    except Exception as e:
+        st.error(f"Text-to-speech error: {e}")
 
 st.markdown("---")
 st.subheader("🎤 Voice Input/Output")
 col1, col2 = st.columns(2)
 with col1:
-    if sr is not None and st.button("Record Voice Input"):
-        recognized = recognize_speech()
-        if recognized:
-            st.session_state["voice_input"] = recognized
+    if sr is not None:
+        if st.button("🎙️ Record Voice Input"):
+            with st.spinner("Initializing microphone..."):
+                recognized = recognize_speech()
+                if recognized:
+                    st.session_state["voice_input"] = recognized
+                    st.rerun()
+    else:
+        st.info("Voice input requires SpeechRecognition library. Install it to enable this feature.")
+    
     if "voice_input" in st.session_state:
-        st.info(f"Voice input: {st.session_state['voice_input']}")
+        st.success(f"Voice input: {st.session_state['voice_input']}")
 with col2:
     if gTTS is not None and st.session_state.get("last_assistant_response"):
         if st.button("🔊 Play Last Assistant Response"):
             text_to_speech(st.session_state["last_assistant_response"])
+    else:
+        st.info("Text-to-speech requires gTTS library.")
 
 
 
