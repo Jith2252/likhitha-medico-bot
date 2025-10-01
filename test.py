@@ -97,12 +97,30 @@ def text_to_speech(text):
 
 st.title("Likhitha Medico-Bot💊🩺")
 
+# Add custom sidebar toggle button
+col1, col2, col3 = st.columns([1, 8, 1])
+with col1:
+    if st.button("⚙️ Settings", help="Click to toggle settings sidebar"):
+        if "sidebar_visible" not in st.session_state:
+            st.session_state["sidebar_visible"] = True
+        st.session_state["sidebar_visible"] = not st.session_state.get("sidebar_visible", True)
+        st.rerun()
+
+# Show sidebar status
+if st.session_state.get("sidebar_visible", True):
+    st.info("💡 **Tip**: Look at the left sidebar for settings, theme options, and session information!")
+
 # Hide Streamlit branding and customize appearance
 st.markdown("""
 <style>
 /* Hide Streamlit branding but keep sidebar toggle */
 footer {visibility: hidden;}
-header {visibility: hidden;}
+
+/* Force sidebar to be visible if sidebar_visible is True */
+.stSidebar {
+    display: block !important;
+    visibility: visible !important;
+}
 
 /* Hide main menu items but keep sidebar toggle visible */
 .stApp > header[data-testid="stHeader"] {
@@ -125,6 +143,26 @@ button[data-testid="baseButton-header"] {
 div[data-testid="collapsedControl"] {
     display: block !important;
     visibility: visible !important;
+    position: fixed !important;
+    top: 1rem !important;
+    left: 1rem !important;
+    z-index: 999999 !important;
+    background-color: #ff4b4b !important;
+    border-radius: 50% !important;
+    padding: 8px !important;
+}
+
+/* Style the collapsed control button */
+div[data-testid="collapsedControl"] button {
+    background-color: #ff4b4b !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 50% !important;
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
 /* Hide "Made with Streamlit" */
@@ -149,29 +187,10 @@ div[data-testid="collapsedControl"] {
     background-clip: text;
 }
 
-/* Custom footer */
-.custom-footer {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    background-color: rgba(240, 242, 246, 0.9);
-    color: #262730;
-    text-align: center;
-    padding: 10px;
-    font-size: 0.8rem;
-    z-index: 999;
-}
-
 /* Ensure sidebar controls remain functional */
 .stSidebar button {
     display: block !important;
     visibility: visible !important;
-}
-
-/* Show sidebar toggle icon in top-left corner */
-.stApp > div[data-testid="stSidebar"] {
-    position: relative;
 }
 
 /* Make sure the collapse/expand button is always visible */
@@ -179,6 +198,23 @@ button[kind="header"] {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
+}
+
+/* Add a visible sidebar toggle in top-left corner if not visible */
+.sidebar-toggle {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 1000;
+    background-color: #ff4b4b;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
 </style>
 """, unsafe_allow_html=True)
