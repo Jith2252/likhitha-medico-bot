@@ -77,30 +77,62 @@ if st.session_state.get("theme_mode") == "light":
     st.markdown("""
     <style>
     /* Light theme customizations */
-    .main .block-container {
-        background-color: #ffffff;
+    .stApp {
+        background-color: #ffffff !important;
     }
+    .main .block-container {
+        background-color: #ffffff !important;
+    }
+    .stSidebar {
+        background-color: #f8f9fa !important;
+    }
+    .stSidebar .sidebar-content {
+        background-color: #f8f9fa !important;
+    }
+    /* Input fields for light theme */
     .stTextInput > div > div > input {
-        background-color: #f8f9fa;
-        color: #212529;
+        background-color: #ffffff !important;
+        color: #212529 !important;
+        border: 1px solid #ced4da !important;
     }
     .stSelectbox > div > div > select {
-        background-color: #f8f9fa;
-        color: #212529;
+        background-color: #ffffff !important;
+        color: #212529 !important;
+        border: 1px solid #ced4da !important;
     }
+    .stTextArea > div > div > textarea {
+        background-color: #ffffff !important;
+        color: #212529 !important;
+        border: 1px solid #ced4da !important;
+    }
+    /* Buttons for light theme */
     .stButton > button {
-        background-color: #007bff;
-        color: white;
-        border: 1px solid #007bff;
+        background-color: #007bff !important;
+        color: white !important;
+        border: 1px solid #007bff !important;
     }
     .stButton > button:hover {
-        background-color: #0056b3;
-        border-color: #0056b3;
+        background-color: #0056b3 !important;
+        border-color: #0056b3 !important;
     }
-    /* Chat message styling for light theme */
+    /* Chat messages for light theme */
     .stChatMessage {
-        background-color: #f8f9fa;
-        border: 1px solid #dee2e6;
+        background-color: #f8f9fa !important;
+        border: 1px solid #dee2e6 !important;
+        color: #212529 !important;
+    }
+    /* File uploader for light theme */
+    .stFileUploader {
+        background-color: #ffffff !important;
+        border: 2px dashed #ced4da !important;
+    }
+    /* General text color for light theme */
+    .stMarkdown, .stText, p, div, span, h1, h2, h3, h4, h5, h6 {
+        color: #212529 !important;
+    }
+    /* Headers and titles */
+    .stTitle, .stHeader, .stSubheader {
+        color: #212529 !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -108,30 +140,62 @@ else:
     st.markdown("""
     <style>
     /* Dark theme customizations */
-    .main .block-container {
-        background-color: #0e1117;
+    .stApp {
+        background-color: #0e1117 !important;
     }
+    .main .block-container {
+        background-color: #0e1117 !important;
+    }
+    .stSidebar {
+        background-color: #262730 !important;
+    }
+    .stSidebar .sidebar-content {
+        background-color: #262730 !important;
+    }
+    /* Input fields for dark theme */
     .stTextInput > div > div > input {
-        background-color: #262730;
-        color: #fafafa;
+        background-color: #262730 !important;
+        color: #fafafa !important;
+        border: 1px solid #464646 !important;
     }
     .stSelectbox > div > div > select {
-        background-color: #262730;
-        color: #fafafa;
+        background-color: #262730 !important;
+        color: #fafafa !important;
+        border: 1px solid #464646 !important;
     }
+    .stTextArea > div > div > textarea {
+        background-color: #262730 !important;
+        color: #fafafa !important;
+        border: 1px solid #464646 !important;
+    }
+    /* Buttons for dark theme */
     .stButton > button {
-        background-color: #ff4b4b;
-        color: white;
-        border: 1px solid #ff4b4b;
+        background-color: #ff4b4b !important;
+        color: white !important;
+        border: 1px solid #ff4b4b !important;
     }
     .stButton > button:hover {
-        background-color: #ff2b2b;
-        border-color: #ff2b2b;
+        background-color: #ff2b2b !important;
+        border-color: #ff2b2b !important;
     }
-    /* Chat message styling for dark theme */
+    /* Chat messages for dark theme */
     .stChatMessage {
-        background-color: #262730;
-        border: 1px solid #464646;
+        background-color: #262730 !important;
+        border: 1px solid #464646 !important;
+        color: #fafafa !important;
+    }
+    /* File uploader for dark theme */
+    .stFileUploader {
+        background-color: #262730 !important;
+        border: 2px dashed #464646 !important;
+    }
+    /* General text color for dark theme */
+    .stMarkdown, .stText, p, div, span, h1, h2, h3, h4, h5, h6 {
+        color: #fafafa !important;
+    }
+    /* Headers and titles */
+    .stTitle, .stHeader, .stSubheader {
+        color: #fafafa !important;
     }
     </style>
     """, unsafe_allow_html=True)
