@@ -46,28 +46,37 @@ if uploaded_file is not None:
         st.info("File type not supported for Q&A.")
 
 # Voice input/output support
-def recognize_speech():
+def process_audio_file(audio_file):
+    """Process uploaded audio file for speech recognition"""
     if sr is None:
-        st.warning("SpeechRecognition is not installed.")
+        st.error("SpeechRecognition is not installed.")
         return ""
+    
     try:
         recognizer = sr.Recognizer()
-        with sr.Microphone() as source:
-            st.info("Listening... Please speak now.")
-            recognizer.adjust_for_ambient_noise(source, duration=1)
-            audio = recognizer.listen(source, timeout=10, phrase_time_limit=15)
+        # Save uploaded file temporarily
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_file:
+            tmp_file.write(audio_file.read())
+            tmp_file_path = tmp_file.name
+        
+        # Process the audio file
+        with sr.AudioFile(tmp_file_path) as source:
+            audio = recognizer.record(source)
+        
         try:
             text = recognizer.recognize_google(audio)
-            st.success(f"You said: {text}")
+            os.unlink(tmp_file_path)  # Clean up temp file
             return text
         except sr.UnknownValueError:
-            st.error("Could not understand the audio. Please try again.")
+            st.error("Could not understand the audio. Please try again with clearer audio.")
+            os.unlink(tmp_file_path)
             return ""
         except sr.RequestError as e:
             st.error(f"Error with speech recognition service: {e}")
+            os.unlink(tmp_file_path)
             return ""
     except Exception as e:
-        st.error(f"Microphone error: {e}. Please check your microphone permissions.")
+        st.error(f"Audio processing error: {e}")
         return ""
 
 def text_to_speech(text):
@@ -86,24 +95,34 @@ st.markdown("---")
 st.subheader("🎤 Voice Input/Output")
 col1, col2 = st.columns(2)
 with col1:
-    if sr is not None:
-        if st.button("🎙️ Record Voice Input"):
-            with st.spinner("Initializing microphone..."):
-                recognized = recognize_speech()
-                if recognized:
-                    st.session_state["voice_input"] = recognized
+    st.markdown("**Audio Input:**")
+    audio_file = st.file_uploader(
+        "Upload an audio file (WAV, MP3, M4A)", 
+        type=["wav", "mp3", "m4a"],
+        help="Record audio on your device and upload it here for speech-to-text conversion"
+    )
+    
+    if audio_file is not None:
+        st.audio(audio_file, format="audio/wav")
+        if st.button("🎙️ Convert Audio to Text"):
+            with st.spinner("Processing audio..."):
+                recognized_text = process_audio_file(audio_file)
+                if recognized_text:
+                    st.session_state["voice_input"] = recognized_text
+                    st.success(f"Converted text: {recognized_text}")
                     st.rerun()
-    else:
-        st.info("Voice input requires SpeechRecognition library. Install it to enable this feature.")
     
     if "voice_input" in st.session_state:
         st.success(f"Voice input: {st.session_state['voice_input']}")
+
 with col2:
+    st.markdown("**Audio Output:**")
     if gTTS is not None and st.session_state.get("last_assistant_response"):
         if st.button("🔊 Play Last Assistant Response"):
-            text_to_speech(st.session_state["last_assistant_response"])
+            with st.spinner("Generating audio..."):
+                text_to_speech(st.session_state["last_assistant_response"])
     else:
-        st.info("Text-to-speech requires gTTS library.")
+        st.info("Text-to-speech will be available after getting a response from the assistant.")
 
 
 
