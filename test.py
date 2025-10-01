@@ -100,13 +100,40 @@ st.title("Likhitha Medico-Bot💊🩺")
 # Hide Streamlit branding and customize appearance
 st.markdown("""
 <style>
-/* Hide Streamlit branding */
-#MainMenu {visibility: hidden;}
+/* Hide Streamlit branding but keep sidebar toggle */
 footer {visibility: hidden;}
 header {visibility: hidden;}
 
+/* Hide main menu items but keep sidebar toggle visible */
+.stApp > header[data-testid="stHeader"] {
+    display: none;
+}
+
+/* Keep sidebar toggle button visible */
+button[data-testid="baseButton-header"] {
+    display: block !important;
+    visibility: visible !important;
+}
+
+/* Show sidebar toggle when sidebar is collapsed */
+.stApp > div[data-testid="stSidebar"] > div > div > button {
+    display: block !important;
+    visibility: visible !important;
+}
+
+/* Ensure sidebar toggle is always accessible */
+div[data-testid="collapsedControl"] {
+    display: block !important;
+    visibility: visible !important;
+}
+
 /* Hide "Made with Streamlit" */
 .viewerBadge_container__1QSob {
+    display: none !important;
+}
+
+/* Hide deploy button and other menu items, but not sidebar toggle */
+.stDeployButton {
     display: none !important;
 }
 
@@ -134,6 +161,24 @@ header {visibility: hidden;}
     padding: 10px;
     font-size: 0.8rem;
     z-index: 999;
+}
+
+/* Ensure sidebar controls remain functional */
+.stSidebar button {
+    display: block !important;
+    visibility: visible !important;
+}
+
+/* Show sidebar toggle icon in top-left corner */
+.stApp > div[data-testid="stSidebar"] {
+    position: relative;
+}
+
+/* Make sure the collapse/expand button is always visible */
+button[kind="header"] {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 </style>
 """, unsafe_allow_html=True)
