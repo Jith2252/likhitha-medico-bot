@@ -4,6 +4,35 @@ from openai import OpenAI
 import io
 import base64
 import tempfile
+
+# Configure the page with custom branding
+st.set_page_config(
+    page_title="Likhitha Medico-Bot 💊",
+    page_icon="🩺",
+    layout="wide",
+    initial_sidebar_state="expanded",
+    menu_items={
+        'Get Help': 'https://github.com/jith2252/likhitha-medico-bot',
+        'Report a bug': 'https://github.com/jith2252/likhitha-medico-bot/issues',
+        'About': """
+        ## Likhitha Medico-Bot 💊🩺
+        
+        **Your AI Medical Assistant**
+        
+        This application provides AI-powered medical information and assistance.
+        Built with ❤️ using Streamlit and OpenAI.
+        
+        **Features:**
+        - Medical Q&A
+        - File upload support (documents, images, audio)
+        - Voice input/output
+        - Multi-format support
+        
+        **Disclaimer:** This is for informational purposes only. 
+        Always consult qualified healthcare professionals for medical advice.
+        """
+    }
+)
 try:
     import pdfkit
 except ImportError:
@@ -67,6 +96,47 @@ def text_to_speech(text):
 
 
 st.title("Likhitha Medico-Bot💊🩺")
+
+# Hide Streamlit branding and customize appearance
+st.markdown("""
+<style>
+/* Hide Streamlit branding */
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+
+/* Hide "Made with Streamlit" */
+.viewerBadge_container__1QSob {
+    display: none !important;
+}
+
+/* Custom header styling */
+.main-header {
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 2rem;
+    background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Custom footer */
+.custom-footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: rgba(240, 242, 246, 0.9);
+    color: #262730;
+    text-align: center;
+    padding: 10px;
+    font-size: 0.8rem;
+    z-index: 999;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # Apply custom theme CSS based on user preference
 if "theme_mode" not in st.session_state:
@@ -586,3 +656,4 @@ with st.sidebar:
         total_cost = sum(u.get("cost", 0.0) for u in st.session_state["token_usage"])
         st.markdown(f"**Total tokens used:** {total_tokens}")
         st.markdown(f"**Estimated cost:** ${total_cost:.4f}")
+
