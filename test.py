@@ -210,12 +210,23 @@ if api_key:
     for i, q in enumerate(quick_questions):
         if qcols[i].button(q):
             st.session_state["quick_question"] = q
+            st.rerun()
 
-    user_input = st.session_state.pop("voice_input", None)
-    if not user_input:
-        user_input = st.session_state.pop("quick_question", None)
-    if not user_input:
-        user_input = st.chat_input("What is up?")
+    # Check for different input sources
+    user_input = None
+    
+    # Check for voice input first
+    if "voice_input" in st.session_state:
+        user_input = st.session_state.pop("voice_input")
+    
+    # Check for quick question input
+    elif "quick_question" in st.session_state:
+        user_input = st.session_state.pop("quick_question")
+    
+    # Always show the chat input box
+    chat_input = st.chat_input("What is up?")
+    if chat_input:
+        user_input = chat_input
     if user_input:
 
         # System prompt for medical expertise, with file context if available
