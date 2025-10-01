@@ -76,9 +76,15 @@ if "theme_mode" not in st.session_state:
 if st.session_state.get("theme_mode") == "light":
     st.markdown("""
     <style>
-    /* Light theme customizations */
+    /* AGGRESSIVE LIGHT THEME - Override everything */
+    *, *::before, *::after {
+        color: #212529 !important;
+    }
+    
+    /* Main app structure */
     .stApp {
         background-color: #ffffff !important;
+        color: #212529 !important;
     }
     .main .block-container {
         background-color: #ffffff !important;
@@ -89,6 +95,40 @@ if st.session_state.get("theme_mode") == "light":
     .stSidebar .sidebar-content {
         background-color: #f8f9fa !important;
     }
+    
+    /* Target ALL possible containers that could be dark */
+    div, section, article, main, aside, nav, header, footer {
+        background-color: inherit !important;
+    }
+    
+    /* Specifically target known dark containers */
+    div[data-testid="stFileUploader"], 
+    div[data-testid="stChatInput"],
+    div[data-baseweb="file-uploader"],
+    section[data-testid="stFileUploader"],
+    section[data-testid="stChatInput"] {
+        background-color: #ffffff !important;
+        color: #212529 !important;
+    }
+    
+    /* All file uploader related elements */
+    .stFileUploader, .stFileUploader *, 
+    .stFileUploader > div, .stFileUploader > div > div,
+    .stFileUploader > div > div > div {
+        background-color: #ffffff !important;
+        color: #212529 !important;
+        border-color: #ced4da !important;
+    }
+    
+    /* All chat input related elements */
+    .stChatInput, .stChatInput *,
+    .stChatInput > div, .stChatInput > div > div,
+    .stChatInput input, .stChatInput textarea {
+        background-color: #ffffff !important;
+        color: #212529 !important;
+        border: 1px solid #ced4da !important;
+    }
+    
     /* Input fields for light theme */
     .stTextInput > div > div > input {
         background-color: #ffffff !important;
@@ -105,6 +145,7 @@ if st.session_state.get("theme_mode") == "light":
         color: #212529 !important;
         border: 1px solid #ced4da !important;
     }
+    
     /* Buttons for light theme */
     .stButton > button {
         background-color: #007bff !important;
@@ -115,50 +156,36 @@ if st.session_state.get("theme_mode") == "light":
         background-color: #0056b3 !important;
         border-color: #0056b3 !important;
     }
+    
     /* Chat messages for light theme */
     .stChatMessage {
         background-color: #f8f9fa !important;
         border: 1px solid #dee2e6 !important;
         color: #212529 !important;
     }
-    /* File uploader for light theme */
-    .stFileUploader {
+    
+    /* Override any inline styles that might be dark */
+    [style*="background-color: rgb(14, 17, 23)"] {
         background-color: #ffffff !important;
-        border: 2px dashed #ced4da !important;
     }
-    .stFileUploader > div {
+    [style*="background-color: rgb(38, 39, 48)"] {
+        background-color: #ffffff !important;
+    }
+    [style*="background-color: rgb(49, 51, 63)"] {
+        background-color: #ffffff !important;
+    }
+    
+    /* Bottom area where chat input lives */
+    .stBottom, .stBottom * {
         background-color: #ffffff !important;
         color: #212529 !important;
     }
-    .stFileUploader label {
+    
+    /* Any remaining elements */
+    input, textarea, select {
+        background-color: #ffffff !important;
         color: #212529 !important;
-    }
-    /* Chat input for light theme */
-    .stChatInput {
-        background-color: #ffffff !important;
-    }
-    .stChatInput > div > div {
-        background-color: #ffffff !important;
         border: 1px solid #ced4da !important;
-    }
-    .stChatInput input {
-        background-color: #ffffff !important;
-        color: #212529 !important;
-    }
-    /* Header and navigation for light theme */
-    .stApp > header {
-        background-color: #ffffff !important;
-    }
-    .stToolbar {
-        background-color: #ffffff !important;
-    }
-    /* General text color for light theme */
-    .stMarkdown, .stText, p, div, span, h1, h2, h3, h4, h5, h6 {
-        color: #212529 !important;
-    }
-    /* Headers and titles */
-    .stTitle, .stHeader, .stSubheader {
-        color: #212529 !important;
     }
     </style>
     """, unsafe_allow_html=True)
